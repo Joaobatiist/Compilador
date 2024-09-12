@@ -5,7 +5,7 @@ public class LerToken {
     public LerToken(String arquivo) {
         ldat = new LeitorDeArquivosTxt(arquivo);
     }
-    public Token  proximotoken() {
+    public Token  proximoToken() {
   int caractereLido = -1;
  while ((caractereLido = ldat.lerProximoCaractere()) != -1){
      char c = (char) caractereLido;
@@ -13,4 +13,6 @@ public class LerToken {
  }
         return null;
     }
+
+
 }
