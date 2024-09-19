@@ -15,7 +15,6 @@ public class CompiladorApplication {
 		SpringApplication.run(CompiladorApplication.class, args);
 
 
-
 		if (args.length > 0) {
 			try {
 				// Cria uma instância de LerToken com o primeiro argumento
@@ -24,14 +23,14 @@ public class CompiladorApplication {
 
 				// Processa os tokens e imprime cada um deles
 				while ((t = lex.proximoToken()) != null) {
-					System.out.println(t);
+					System.out.print(t);
 				}
 			} catch (Exception e) {
-				System.err.println("Erro ao processar tokens: " + e.getMessage());
+				System.err.print("Erro ao processar tokens: " + e.getMessage());
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Nenhum argumento foi fornecido. Por favor, forneça o caminho do arquivo como argumento.");
+			System.out.print("Nenhum argumento foi fornecido. Por favor, forneça o caminho do arquivo como argumento.");
 		}
 	}
 }
