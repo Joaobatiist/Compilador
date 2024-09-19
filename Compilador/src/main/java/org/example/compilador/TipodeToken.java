@@ -1,7 +1,7 @@
 package org.example.compilador;
 
 public enum TipodeToken {
-    // Identificadores e literais
+    // Identificadores
     IDENTIFICADOR, NUMB, STRING, CARACTERE, FLOAT, BOOLEAN, NULL, VIRGULA, PONTO, ATRIBUICAO,
     CONCATENACAO,
 

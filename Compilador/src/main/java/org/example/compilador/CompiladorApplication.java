@@ -1,17 +1,21 @@
 package org.example.compilador;
 
+import lombok.SneakyThrows;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.nio.file.Path;
+import java.io.File;
+import java.util.Scanner;
 
 @SpringBootApplication
 public class CompiladorApplication {
 
-	public static void main(String[] args) {
+	@SneakyThrows
+    public static void main(String[] args) {
 		SpringApplication.run(CompiladorApplication.class, args);
 
-		// Verifica se há argumentos fornecidos
+
+
 		if (args.length > 0) {
 			try {
 				// Cria uma instância de LerToken com o primeiro argumento

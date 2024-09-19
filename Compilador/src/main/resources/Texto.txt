@@ -1,0 +1,6 @@
+public class
+
+String <palavra_resevada> = 'joao';
+int b <id, 01> = 2;
+
+int a <id, 02> = 2;
