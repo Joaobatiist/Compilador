@@ -4,8 +4,11 @@ import lombok.SneakyThrows;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.File;
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+
+
 
 @SpringBootApplication
 public class CompiladorApplication {
@@ -18,6 +21,7 @@ public class CompiladorApplication {
 		if (args.length > 0) {
 			try {
 				// Cria uma instância de LerToken com o primeiro argumento
+
 				LerToken lex = new LerToken(args[0]);
 				Token t;
 
@@ -32,5 +36,10 @@ public class CompiladorApplication {
 		} else {
 			System.out.print("Nenhum argumento foi fornecido. Por favor, forneça o caminho do arquivo como argumento.");
 		}
+
 	}
-}
+	}
+
+
+
+

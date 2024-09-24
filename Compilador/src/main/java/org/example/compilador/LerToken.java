@@ -1,5 +1,7 @@
 package org.example.compilador;
 import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -7,35 +9,90 @@ public class LerToken {
     LeitorDeArquivosTxt ldat;
 
     public LerToken(String arquivo) {
+
         ldat = new LeitorDeArquivosTxt(arquivo);
+    }
+    public List<Token> gerarTokens() {
+        List<Token> tokens = new ArrayList<>();
+        Token token;
+
+        // Chama proximoToken até que não haja mais tokens
+        while ((token = proximoToken()) != null) {
+            tokens.add(token);
+        }
+
+        return tokens;
     }
 
     public Token proximoToken() {
         int caractereLido;
         StringBuilder palavra = new StringBuilder();
 
+
         while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
             char c = (char) caractereLido;
 
-            // Ignorar espaços em branco
+
+
+
             if (c == ' ' || c == '\n' ) continue;
 
 
-            // Identificando identificadores
+            if (c == '/') {
+                int nextChar = ldat.lerProximoCaractere();
+                if (nextChar == '/') {
+
+                    while ((nextChar = ldat.lerProximoCaractere()) != -1 && nextChar != '\n') {
+
+                    }
+                    continue;
+                } else if (nextChar == '*') {
+
+                    while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
+                        if (caractereLido == '*') {
+                            int nextBlockChar = ldat.lerProximoCaractere();
+                            if (nextBlockChar == '/') {
+                                break;
+                            } else {
+                                ldat.retroceder(nextBlockChar);
+                            }
+                        }
+                    }
+                    continue;
+                } else {
+
+                    ldat.retroceder(nextChar);
+                }
+            }
+
+            if (c == '"') {
+                while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
+                    c = (char) caractereLido;
+                    if (c == '"') break;
+                    if (c == '\\') {
+                        ldat.lerProximoCaractere();
+                    }
+                }
+                continue; // Retorna ao início do loop
+            }
+
+
+
             if (Character.isLetter(c) || c == '_') {
                 palavra.append(c);
-                // Continuar a acumular caracteres enquanto forem válidos
                 while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
                     c = (char) caractereLido;
                     if (Character.isLetterOrDigit(c) || c == '_') {
                         palavra.append(c);
                     } else {
-                        ldat.retroceder(caractereLido); // método para retroceder um caractere
-                        break; // sair do loop
+                        ldat.retroceder(caractereLido); // Método para retroceder um caractere
+                        break; // Sair do loop
                     }
                 }
                 return verificarIdentificador(palavra.toString());
+
             }
+
 
             // Identificando delimitadores
             switch (c) {
@@ -53,9 +110,25 @@ public class LerToken {
 
             // Identificando operadores aritméticos
             switch (c) {
+
+                case '+':
+                    int nextChar = ldat.lerProximoCaractere();
+                    if (nextChar == '+') {
+                        return new Token(TipodeToken.OPERADOR_ARITIMETICO_INCREMENTO, "++");
+                    } else {
+                        ldat.retroceder(nextChar);
+                        return new Token(TipodeToken.OPERADOR_ARITIMETICO_SOMA, "+");
+                    }
                 case '*': return new Token(TipodeToken.OPERADOR_ARITIMETICO_MULTIPLICACAO, "*");
-                case '+': return new Token(TipodeToken.OPERADOR_ARITIMETICO_SOMA, "+");
-                case '-': return new Token(TipodeToken.OPERADOR_ARITMETICO_SUBTRACAO, "-");
+
+                case '-':
+                  nextChar = ldat.lerProximoCaractere();
+                    if (nextChar == '-') {
+                    return new Token(TipodeToken.OPERADOR_ARITIMETICO_DECREMENTO, "--");
+                } else {
+                    ldat.retroceder(nextChar);
+                    return new Token(TipodeToken.OPERADOR_ARITMETICO_SUBTRACAO, "-");
+                }
                 case '/': return new Token(TipodeToken.OPERADOR_ARITMETICO_DIVISAO, "/");
                 case '%': return new Token(TipodeToken.OPERADOR_ARITIMETICO_RESTO, "%");
                 case '=': return new Token(TipodeToken.IGUAL, "=");
@@ -79,7 +152,7 @@ public class LerToken {
                 return new Token(TipodeToken.PALAVRA_RESERVADA, valor);
             }
             contadorIdentificadores++;
-            System.out.print(" id " + contadorIdentificadores);
+            System.out.print(" id " + contadorIdentificadores );
             return new Token(TipodeToken.IDENTIFICADOR, valor);
         }
         return null;
