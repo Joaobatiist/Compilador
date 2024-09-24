@@ -1,4 +1,5 @@
 package org.example.compilador;
+import java.sql.SQLOutput;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +18,8 @@ public class LerToken {
             char c = (char) caractereLido;
 
             // Ignorar espaços em branco
-            if (Character.isWhitespace(c)) continue;
+            if (c == ' ' || c == '\n' ) continue;
+
 
             // Identificando identificadores
             if (Character.isLetter(c) || c == '_') {
@@ -65,7 +67,7 @@ public class LerToken {
         }
         return null; // Se não há mais tokens
     }
-
+    int contadorIdentificadores = 0;
     private Token verificarIdentificador(String valor) {
         // Regex para identificadores válidos
         String regex = "^[a-zA-Z_][a-zA-Z0-9_]*$";
@@ -73,13 +75,14 @@ public class LerToken {
         Matcher matcher = pattern.matcher(valor);
 
         if (matcher.matches()) {
-            // Verifica se é uma palavra reservada
             if (isPalavraReservada(valor)) {
                 return new Token(TipodeToken.PALAVRA_RESERVADA, valor);
             }
+            contadorIdentificadores++;
+            System.out.print(" id " + contadorIdentificadores);
             return new Token(TipodeToken.IDENTIFICADOR, valor);
         }
-        return null; // Ou trate de outra forma se necessário
+        return null;
     }
 
     private boolean isPalavraReservada(String palavra) {

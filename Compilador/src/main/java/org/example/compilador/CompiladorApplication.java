@@ -23,7 +23,7 @@ public class CompiladorApplication {
 
 				// Processa os tokens e imprime cada um deles
 				while ((t = lex.proximoToken()) != null) {
-					System.out.print(t);
+					System.out.println(t);
 				}
 			} catch (Exception e) {
 				System.err.print("Erro ao processar tokens: " + e.getMessage());
