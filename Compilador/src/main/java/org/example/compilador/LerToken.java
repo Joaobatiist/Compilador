@@ -30,9 +30,12 @@ public class LerToken {
         int caractereLido;
         StringBuilder palavra = new StringBuilder();
 
+
         while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
             char c = (char) caractereLido;
+
             if (c == ' ' || c == '\n' ) continue;
+
             if (c == '/') {
                 int nextChar = ldat.lerProximoCaractere();
                 if (nextChar == '/') {
@@ -72,7 +75,6 @@ public class LerToken {
             }
 
 
-
             if (Character.isLetter(c) || c == '_') {
                 palavra.append(c);
                 while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
@@ -80,12 +82,20 @@ public class LerToken {
                     if (Character.isLetterOrDigit(c) || c == '_') {
                         palavra.append(c);
                     } else {
+                        if (c == '.') {
+                            ldat.retroceder(caractereLido); // Volte o caractere para o buffer
+                            String identificadorAtual = palavra.toString();
+                            if (!identificadorAtual.isEmpty()) {
+                                return new Token(TipodeToken.IDENTIFICADOR, identificadorAtual);
+                            }
+                            // Retorne o token para o ponto
+                            return new Token(TipodeToken.PONTO, ".");
+                        }
                         ldat.retroceder(caractereLido); // Método para retroceder um caractere
                         break; // Sair do loop
                     }
                 }
                 return verificarIdentificador(palavra.toString());
-
             }
             if (Character.isDigit(c)) {
                 palavra.append(c);
@@ -101,8 +111,19 @@ public class LerToken {
                 return verificarNumero(palavra.toString());
             }
 
-
-
+            if (Character.isDigit(c)) {
+                palavra.append(c);
+                while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
+                    c = (char) caractereLido;
+                    if (Character.isDigit(c)) {
+                        palavra.append(c);
+                    } else {
+                        ldat.retroceder(caractereLido);
+                        break;
+                    }
+                }
+                return verificarNumero(palavra.toString());
+            }
 
             // Identificando delimitadores
             switch (c) {
@@ -148,13 +169,14 @@ public class LerToken {
 
             // Adicione mais operadores e lógicas conforme necessário
         }
-        return null;
+        return null; // Se não há mais tokens
     }
+
     private int contadorIdentificadores = 0;
-    private Map<String, Integer> identificadores = new HashMap<>();
+    private Map<String, Integer> identificadoresMap = new HashMap<>();
 
     private Token verificarIdentificador(String valor) {
-
+        // Regex para identificadores válidos
         String regex = "^[a-zA-Z_][a-zA-Z0-9_]*$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(valor);
@@ -164,21 +186,35 @@ public class LerToken {
                 return new Token(TipodeToken.PALAVRA_RESERVADA, valor);
             }
 
-
-            if (!identificadores.containsKey(valor)) {
+            // Verifica se o identificador já foi encontrado
+            if (!identificadoresMap.containsKey(valor)) {
+                // Se não foi encontrado, adiciona ao mapa e incrementa o contador
                 contadorIdentificadores++;
-                identificadores.put(valor, contadorIdentificadores);
+                identificadoresMap.put(valor, contadorIdentificadores);
             }
 
-            int id = identificadores.get(valor);
-            System.out.print(" id " + id);
+            int idAtual = identificadoresMap.get(valor);
+            System.out.print(" id " + idAtual);
             return new Token(TipodeToken.IDENTIFICADOR, valor);
         }
 
         return null;
     }
 
+    private Token verificarNumero(String valor){
+        String numberRegex = "^[0-9]*$";
+        Pattern paternn = Pattern.compile(numberRegex);
+        Matcher matcher2 = paternn.matcher(valor);
+
+        if (matcher2.matches()){
+            return new Token(TipodeToken.NUMB, valor);
+        }
+        return null;
+    }
+
     private boolean isPalavraReservada(String palavra) {
+        // Verifica se a palavra é uma palavra reservada
+        // Coloque aqui a lógica para verificar as palavras reservadas
         String[] palavrasReservadas = {
                 "abstract", "assert", "boolean", "break", "case", "byte",
                 "catch", "char", "class", "const", "continue", "default",
@@ -199,18 +235,7 @@ public class LerToken {
         }
         return false;
     }
-    private Token verificarNumero(String valor){
-        String numberRegex = "^[0-9]*$";
-        Pattern paternn = Pattern.compile(numberRegex);
-        Matcher matcher2 = paternn.matcher(valor);
 
-        if (matcher2.matches()){
-            return new Token(TipodeToken.NUMB, valor);
-        }
-
-        return null;
-
-    }
 
 
 }
