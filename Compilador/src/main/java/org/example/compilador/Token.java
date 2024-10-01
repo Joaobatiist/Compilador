@@ -10,7 +10,7 @@ public class Token {
         this.lexema = lexema;
     }
 
-    public TipodeToken getNome() {
+    public TipodeToken getTipo() {
         return tipo;
     }
 

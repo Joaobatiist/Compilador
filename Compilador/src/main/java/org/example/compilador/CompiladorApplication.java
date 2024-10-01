@@ -20,12 +20,12 @@ public class CompiladorApplication {
 
 		if (args.length > 0) {
 			try {
-				// Cria uma instância de LerToken com o primeiro argumento
+
 
 				LerToken lex = new LerToken(args[0]);
 				Token t;
 
-				// Processa os tokens e imprime cada um deles
+
 				while ((t = lex.proximoToken()) != null) {
 					System.out.println(t);
 				}
