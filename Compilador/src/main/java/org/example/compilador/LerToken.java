@@ -32,11 +32,7 @@ public class LerToken {
         while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
             char c = (char) caractereLido;
 
-
-
-
             if (c == ' ' || c == '\n' ) continue;
-
 
             if (c == '/') {
                 int nextChar = ldat.lerProximoCaractere();
@@ -77,7 +73,6 @@ public class LerToken {
             }
 
 
-
             if (Character.isLetter(c) || c == '_') {
                 palavra.append(c);
                 while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
@@ -99,7 +94,6 @@ public class LerToken {
                     }
                 }
                 return verificarIdentificador(palavra.toString());
-
             }
             if (Character.isDigit(c)) {
                 palavra.append(c);
@@ -115,6 +109,19 @@ public class LerToken {
                 return verificarNumero(palavra.toString());
             }
 
+            if (Character.isDigit(c)) {
+                palavra.append(c);
+                while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
+                    c = (char) caractereLido;
+                    if (Character.isDigit(c)) {
+                        palavra.append(c);
+                    } else {
+                        ldat.retroceder(caractereLido);
+                        break;
+                    }
+                }
+                return verificarNumero(palavra.toString());
+            }
 
             // Identificando delimitadores
             switch (c) {
@@ -162,8 +169,9 @@ public class LerToken {
         }
         return null; // Se não há mais tokens
     }
-    int contadorIdentificadores = 0;
+
     private Token verificarIdentificador(String valor) {
+        int contadorIdentificadores = 0;
         // Regex para identificadores válidos
         String regex = "^[a-zA-Z_][a-zA-Z0-9_]*$";
         Pattern pattern = Pattern.compile(regex);
@@ -178,6 +186,17 @@ public class LerToken {
             return new Token(TipodeToken.IDENTIFICADOR, valor);
         }
 
+        return null;
+    }
+
+    private Token verificarNumero(String valor){
+        String numberRegex = "^[0-9]*$";
+        Pattern paternn = Pattern.compile(numberRegex);
+        Matcher matcher2 = paternn.matcher(valor);
+
+        if (matcher2.matches()){
+            return new Token(TipodeToken.NUMB, valor);
+        }
         return null;
     }
 
