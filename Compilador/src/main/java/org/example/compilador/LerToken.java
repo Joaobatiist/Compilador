@@ -85,12 +85,34 @@ public class LerToken {
                     if (Character.isLetterOrDigit(c) || c == '_') {
                         palavra.append(c);
                     } else {
+                        if (c == '.') {
+                            ldat.retroceder(caractereLido); // Volte o caractere para o buffer
+                            String identificadorAtual = palavra.toString();
+                            if (!identificadorAtual.isEmpty()) {
+                                return new Token(TipodeToken.IDENTIFICADOR, identificadorAtual);
+                            }
+                            // Retorne o token para o ponto
+                            return new Token(TipodeToken.PONTO, ".");
+                        }
                         ldat.retroceder(caractereLido); // Método para retroceder um caractere
                         break; // Sair do loop
                     }
                 }
                 return verificarIdentificador(palavra.toString());
 
+            }
+            if (Character.isDigit(c)) {
+                palavra.append(c);
+                while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
+                    c = (char) caractereLido;
+                    if (Character.isDigit(c)) {
+                        palavra.append(c);
+                    } else {
+                        ldat.retroceder(caractereLido);
+                        break;
+                    }
+                }
+                return verificarNumero(palavra.toString());
             }
 
 
@@ -155,6 +177,7 @@ public class LerToken {
             System.out.print(" id " + contadorIdentificadores );
             return new Token(TipodeToken.IDENTIFICADOR, valor);
         }
+
         return null;
     }
 
@@ -170,8 +193,9 @@ public class LerToken {
                 "native", "new", "null", "package", "private", "protected",
                 "public", "return", "short", "static", "strictfp",
                 "super", "switch", "synchronized", "this", "throw",
-                "throws", "transient", "try", "void", "volatile", "while"
+                "throws", "transient", "try", "void", "volatile", "while", "String"
         };
+
 
         for (String p : palavrasReservadas) {
             if (palavra.equals(p)) {
@@ -180,4 +204,18 @@ public class LerToken {
         }
         return false;
     }
+    private Token verificarNumero(String valor){
+        String numberRegex = "^[0-9]*$";
+        Pattern paternn = Pattern.compile(numberRegex);
+        Matcher matcher2 = paternn.matcher(valor);
+
+        if (matcher2.matches()){
+            return new Token(TipodeToken.NUMB, valor);
+        }
+
+        return null;
+
+    }
+
+
 }

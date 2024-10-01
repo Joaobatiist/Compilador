@@ -3,8 +3,14 @@ public class Main {
 /* ola mundo */
 // ola joao
 
+String a = "joao paulo";
         System.out.println("Hello and welcome!");
+int a = 10;
+int b = 20;
 
+int soma = a + b;
+
+System.out.print("a soma é =" + soma)
         for (int i = 1; i <= 5; i++) {
 
             System.out.println("i = " + i);
