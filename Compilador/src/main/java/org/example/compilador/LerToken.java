@@ -9,18 +9,15 @@ public class LerToken {
     LeitorDeArquivosTxt ldat;
 
     public LerToken(String arquivo) {
-
         ldat = new LeitorDeArquivosTxt(arquivo);
     }
     public List<Token> gerarTokens() {
         List<Token> tokens = new ArrayList<>();
         Token token;
-
         // Chama proximoToken até que não haja mais tokens
         while ((token = proximoToken()) != null) {
             tokens.add(token);
         }
-
         return tokens;
     }
 
@@ -28,26 +25,18 @@ public class LerToken {
         int caractereLido;
         StringBuilder palavra = new StringBuilder();
 
-
         while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
             char c = (char) caractereLido;
 
-
-
-
             if (c == ' ' || c == '\n' ) continue;
-
 
             if (c == '/') {
                 int nextChar = ldat.lerProximoCaractere();
                 if (nextChar == '/') {
-
                     while ((nextChar = ldat.lerProximoCaractere()) != -1 && nextChar != '\n') {
-
                     }
                     continue;
                 } else if (nextChar == '*') {
-
                     while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
                         if (caractereLido == '*') {
                             int nextBlockChar = ldat.lerProximoCaractere();
@@ -60,7 +49,6 @@ public class LerToken {
                     }
                     continue;
                 } else {
-
                     ldat.retroceder(nextChar);
                 }
             }
@@ -76,8 +64,6 @@ public class LerToken {
                 continue; // Retorna ao início do loop
             }
 
-
-
             if (Character.isLetter(c) || c == '_') {
                 palavra.append(c);
                 while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
@@ -86,13 +72,13 @@ public class LerToken {
                         palavra.append(c);
                     } else {
                         if (c == '.') {
-                            ldat.retroceder(caractereLido); // Volte o caractere para o buffer
+                            ldat.retroceder(caractereLido);
                             String identificadorAtual = palavra.toString();
                             if (!identificadorAtual.isEmpty()) {
                                 return new Token(TipodeToken.IDENTIFICADOR, identificadorAtual);
                             }
-                            // Retorne o token para o ponto
                             return new Token(TipodeToken.PONTO, ".");
+                            // Retorne o token para o ponto
                         }
                         ldat.retroceder(caractereLido); // Método para retroceder um caractere
                         break; // Sair do loop
@@ -101,6 +87,7 @@ public class LerToken {
                 return verificarIdentificador(palavra.toString());
 
             }
+
             if (Character.isDigit(c)) {
                 palavra.append(c);
                 while ((caractereLido = ldat.lerProximoCaractere()) != -1) {

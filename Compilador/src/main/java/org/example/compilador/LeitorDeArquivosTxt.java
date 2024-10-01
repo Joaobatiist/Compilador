@@ -19,6 +19,7 @@ public class LeitorDeArquivosTxt {
     public int lerProximoCaractere() {
         try {
             int ret = pushbackInputStream.read(); // Lê o próximo caractere
+            
             System.out.print((char) ret); // Exibe o caractere lido
             return ret;
         } catch (IOException ex) {
