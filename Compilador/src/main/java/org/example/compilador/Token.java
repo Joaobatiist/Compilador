@@ -20,6 +20,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return " Token < " + "tipo=" + tipo + ", lexema= '" + lexema + '\'' + '>';
+        return  " <" + "Token = " + lexema + " >"+ " <" + "tipo = '" + tipo + '\'' + '>';
     }
 }

@@ -194,7 +194,7 @@ public class LerToken {
             }
 
             int idAtual = identificadoresMap.get(valor);
-            System.out.print(" id " + idAtual);
+            System.out.print(" id " + idAtual + " {TS}");
             return new Token(TipodeToken.IDENTIFICADOR, valor);
         }
 
@@ -224,7 +224,7 @@ public class LerToken {
                 "native", "new", "null", "package", "private", "protected",
                 "public", "return", "short", "static", "strictfp",
                 "super", "switch", "synchronized", "this", "throw",
-                "throws", "transient", "try", "void", "volatile", "while", "String"
+                "throws", "transient", "try", "void", "volatile", "while"
         };
 
 
