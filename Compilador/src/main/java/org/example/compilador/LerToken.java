@@ -30,7 +30,12 @@ public class LerToken {
 
             // Ignorar espaços e quebras de linha
             if (c == ' ' || c == '\n') continue;
-
+            if (c == '\\'){
+                int nextChar = ldat.lerProximoCaractere();
+                if (nextChar == 'n'){
+                    System.out.println("\\n");
+                }
+            }
 
             if (c == '\\') {
             int nextChar = ldat.lerProximoCaractere();
