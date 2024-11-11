@@ -5,9 +5,11 @@ public class Token {
     public TipodeToken tipo;
     public String lexema;
 
+
     public Token(TipodeToken tipo, String lexema) {
         this.tipo = tipo;
         this.lexema = lexema;
+
     }
 
     public TipodeToken getTipo() {
@@ -20,6 +22,13 @@ public class Token {
 
     @Override
     public String toString() {
-        return  " <" + "Token = " + lexema + " >"+ " <" + "tipo = '" + tipo + '\'' + '>';
+        return " Token < " + "tipo=" + tipo + ", lexema= '" + lexema + '\'' + '>';
+
     }
-}
+
+
+    }
+
+
+
+

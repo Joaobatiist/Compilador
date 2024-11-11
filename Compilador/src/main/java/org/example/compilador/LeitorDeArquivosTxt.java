@@ -10,7 +10,7 @@ public class LeitorDeArquivosTxt {
     public LeitorDeArquivosTxt(String arquivo) {
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(arquivo));
-            pushbackInputStream = new PushbackInputStream(fileInputStream, 1); // O tamanho do buffer é 1
+            pushbackInputStream = new PushbackInputStream(fileInputStream, 1024); // O tamanho do buffer é 1
         } catch (FileNotFoundException ex) {
             Logger.getLogger(LeitorDeArquivosTxt.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -18,8 +18,8 @@ public class LeitorDeArquivosTxt {
 
     public int lerProximoCaractere() {
         try {
-            int ret = pushbackInputStream.read(); // Lê o próximo caractere
-            
+            int ret =  pushbackInputStream.read(); // Lê o próximo caractere
+             // Exibe o caractere lido
 
             return ret;
         } catch (IOException ex) {
@@ -36,11 +36,7 @@ public class LeitorDeArquivosTxt {
         }
     }
 
-    public void close() {
-        try {
-            pushbackInputStream.close(); // Fecha o fluxo
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
-}
+
+
