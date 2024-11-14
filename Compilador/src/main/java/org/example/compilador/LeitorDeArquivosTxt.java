@@ -28,6 +28,7 @@ public class LeitorDeArquivosTxt {
         }
     }
 
+
     public void retroceder(int caractere) {
         try {
             pushbackInputStream.unread(caractere); // Retrocede o último caractere lido

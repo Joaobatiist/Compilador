@@ -30,19 +30,19 @@ public class LerToken {
 
             // Ignorar espaços e quebras de linha
             if (c == ' ' || c == '\n') continue;
-            if (c == '\\'){
+            if (c == '\\') {
                 int nextChar = ldat.lerProximoCaractere();
-                if (nextChar == 'n'){
+                if (nextChar == 'n') {
                     System.out.println("\\n");
                 }
             }
 
             if (c == '\\') {
-            int nextChar = ldat.lerProximoCaractere();
-            if (nextChar == 'n'){
-                System.out.println("\\n");
+                int nextChar = ldat.lerProximoCaractere();
+                if (nextChar == 'n') {
+                    System.out.println("\\n");
+                }
             }
-        }
             // Comentários
             if (c == '/') {
                 int nextChar = ldat.lerProximoCaractere();
@@ -70,17 +70,21 @@ public class LerToken {
                 }
             }
 
-            // Strings entre aspas
-            if (c == '"') {
-                while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
-                    c = (char) caractereLido;
-                    if (c == '"') break;  // Fim da string
-                    if (c == '\\') {
-                        ldat.lerProximoCaractere(); // Ignorar escape
-                    }
+
+            if (c == '\"') {
+                Token abreAspasToken = new Token(TipodeToken.ABRE_ASPAS, "\"");
+                System.out.println(abreAspasToken);
+                StringBuilder textoIgnorado = new StringBuilder();
+                int nextChar = ldat.lerProximoCaractere();
+                while (nextChar != '\"') {
+                    textoIgnorado.append((char) nextChar);
+                    nextChar = ldat.lerProximoCaractere();
                 }
-                continue;  // Retorna ao início do loop
+                System.out.println(textoIgnorado.toString());
+                Token fechaAspasToken = new Token(TipodeToken.FECHA_ASPAS, "\"");
+                return fechaAspasToken;
             }
+
 
             // Identificadores e palavras reservadas
             if (Character.isLetter(c) || c == '_') {
@@ -117,45 +121,121 @@ public class LerToken {
                 return verificarNumero(palavra.toString());
             }
 
-            // Identificando delimitadores
+            // delimitadores
             switch (c) {
-                case '(': return new Token(TipodeToken.PARENTESE_ABRINDO, "(");
-                case ')': return new Token(TipodeToken.PARENTESE_FECHANDO, ")");
-                case '{': return new Token(TipodeToken.CHAVES_ABRINDO, "{");
-                case '}': return new Token(TipodeToken.CHAVES_FECHANDO, "}");
-                case '[': return new Token(TipodeToken.CHAVES_ABRINDO, "[");
-                case ']': return new Token(TipodeToken.CHAVES_FECHANDO, "]");
-                case ';': return new Token(TipodeToken.PONTO_VIRGULA, ";");
-                case ':': return new Token(TipodeToken.DOIS_PONTOS, ":");
-                case ',': return new Token(TipodeToken.VIRGULA, ",");
-                case '.': return new Token(TipodeToken.PONTO, ".");
+                case '(':
+                    return new Token(TipodeToken.PARENTESE_ABRINDO, "(");
+                case ')':
+                    return new Token(TipodeToken.PARENTESE_FECHANDO, ")");
+                case '{':
+                    return new Token(TipodeToken.CHAVES_ABRINDO, "{");
+                case '}':
+                    return new Token(TipodeToken.CHAVES_FECHANDO, "}");
+                case '[':
+                    return new Token(TipodeToken.COLCHETE_ABRINDO, "[");
+                case ']':
+                    return new Token(TipodeToken.COLCHETE_FECHANDO, "]");
+                case ';':
+                    return new Token(TipodeToken.PONTO_VIRGULA, ";");
+                case ',':
+                    return new Token(TipodeToken.VIRGULA, ",");
+                case '.':
+                    return new Token(TipodeToken.PONTO, ".");
+                case '\"':
+                    return new Token(TipodeToken.ABRE_ASPAS, "\"");
             }
 
-            // Identificando operadores aritméticos
+            // operadores aritméticos
             switch (c) {
                 case '+':
                     int nextChar = ldat.lerProximoCaractere();
                     if (nextChar == '+') {
                         return new Token(TipodeToken.OPERADOR_ARITIMETICO_INCREMENTO, "++");
                     } else {
+                        if (nextChar == '=') {
+                            return new Token(TipodeToken.SOMA_ATRIBUICAO, "+=");
+                        }
                         ldat.retroceder(nextChar);
                         return new Token(TipodeToken.OPERADOR_ARITIMETICO_SOMA, "+");
                     }
-                case '*': return new Token(TipodeToken.OPERADOR_ARITIMETICO_MULTIPLICACAO, "*");
+
+                case '*':
+                    nextChar = ldat.lerProximoCaractere();
+                    if (nextChar == '='){
+                        return new Token(TipodeToken.MULTIPLICACAO_ATRIBUICAO, "*=");
+                    }
+                    return new Token(TipodeToken.OPERADOR_ARITIMETICO_MULTIPLICACAO, "*");
                 case '-':
                     nextChar = ldat.lerProximoCaractere();
                     if (nextChar == '-') {
                         return new Token(TipodeToken.OPERADOR_ARITIMETICO_DECREMENTO, "--");
                     } else {
+                        if (nextChar == '=') {
+                            return new Token(TipodeToken.SUBTRACAO_ATRIBUICAO, "-=");
+                        }
                         ldat.retroceder(nextChar);
                         return new Token(TipodeToken.OPERADOR_ARITMETICO_SUBTRACAO, "-");
                     }
-                case '/': return new Token(TipodeToken.OPERADOR_ARITMETICO_DIVISAO, "/");
-                case '%': return new Token(TipodeToken.OPERADOR_ARITIMETICO_RESTO, "%");
-                case '=': return new Token(TipodeToken.IGUAL, "=");
-                case '<': return new Token(TipodeToken.MENORQUE, "<");
-                case '>': return new Token(TipodeToken.MAIORQUE, ">");
+                case '/':
+                    nextChar = ldat.lerProximoCaractere();
+                    if (nextChar == '='){
+                        return new Token(TipodeToken.DIVISAO_ATRIBUICAO, "/=");
+                    } else {
+                    return new Token(TipodeToken.OPERADOR_ARITMETICO_DIVISAO, "/");
+                    }
+                case '%':
+                    return new Token(TipodeToken.OPERADOR_ARITIMETICO_RESTO, "%");
+                case '=':
+                    nextChar = ldat.lerProximoCaractere();
+                    if (nextChar == '='){
+                        return new Token(TipodeToken.IGUAL_A, "==");
+                    } else {
+                    return new Token(TipodeToken.IGUAL_ATRIBUICAO, "=");
+                    }
+                case '<':
+                    nextChar = ldat.lerProximoCaractere();
+                    if (nextChar == '='){
+                        return new Token(TipodeToken.MENORQUE_IGUAL, "<=");
+                    } else {
+                        return new Token(TipodeToken.MENORQUE, "<");
+                    }
+                case '>':
+                    nextChar = ldat.lerProximoCaractere();
+                    if(nextChar == '='){
+                        return new Token(TipodeToken.MAIORQUE_IGUAL, ">=");
+                    } else {
+                    return new Token(TipodeToken.MAIORQUE, ">");
+                    }
+                case '!':
+                    nextChar = ldat.lerProximoCaractere();
+                    if (nextChar == '='){
+                        return new Token(TipodeToken.DIFERENTE, "!=");
+                    }
+                }
+
+            //Operadores Lógicos
+            switch (c) {
+                case '&':
+                    int nextChar = ldat.lerProximoCaractere();
+                    if (nextChar == '&') {
+                        return new Token(TipodeToken.E, "&&");
+                         }
+                    else {
+                        return new Token(TipodeToken.E_BIT, "&");
+                    }
+                case '|':
+                    nextChar = ldat.lerProximoCaractere();
+                    if (nextChar == '|'){
+                        return new Token(TipodeToken.OU, "||");
+                    } else {
+                        return new Token(TipodeToken.OU_BIT, "|");
+                    }
+                case '!': return new Token(TipodeToken.NAO, "!");
+                case '^': return new Token(TipodeToken.XOR_BIT, "^");
+                case '?': return new Token(TipodeToken.INTERROGACAO, "?");
+                case ':': return new Token(TipodeToken.DOIS_PONTOS, ":");
             }
+
         }
         return null; // Se não há mais tokens
     }
