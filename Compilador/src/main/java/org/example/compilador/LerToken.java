@@ -33,7 +33,7 @@ public class LerToken {
             if (c == '\\') {
                 int nextChar = ldat.lerProximoCaractere();
                 if (nextChar == 'n') {
-                    System.out.println("\\n");
+                    System.out.println(" \\n");
                 }
             }
 
