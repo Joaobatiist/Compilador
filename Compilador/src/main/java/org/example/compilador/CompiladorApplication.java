@@ -3,7 +3,6 @@ package org.example.compilador;
 import lombok.SneakyThrows;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -19,11 +18,8 @@ public class CompiladorApplication {
 
 		if (args.length > 0) {
 			try {
-
-
 				LerToken lex = new LerToken(args[0]);
 				Token t;
-
 
 				while ((t = lex.proximoToken()) != null) {
 					System.out.println(t);

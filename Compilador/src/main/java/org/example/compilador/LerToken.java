@@ -84,7 +84,19 @@ public class LerToken {
                 Token fechaAspasToken = new Token(TipodeToken.FECHA_ASPAS, "\"");
                 return fechaAspasToken;
             }
-
+            if (c == '\'') {
+                Token abreAspasSimplesToken = new Token(TipodeToken.ABRE_ASPAS_SIMPLES, "\'");
+                System.out.println(abreAspasSimplesToken);
+                StringBuilder textoIgnorado = new StringBuilder();
+                int nextChar = ldat.lerProximoCaractere();
+                while (nextChar != '\'') {
+                    textoIgnorado.append((char) nextChar);
+                    nextChar = ldat.lerProximoCaractere();
+                }
+                System.out.println(textoIgnorado.toString());
+                Token fechaAspasSimplesToken = new Token(TipodeToken.FECHA_ASPAS_SIMPLES, "\'");
+                return fechaAspasSimplesToken;
+            }
 
             // Identificadores e palavras reservadas
             if (Character.isLetter(c) || c == '_') {
@@ -143,6 +155,12 @@ public class LerToken {
                     return new Token(TipodeToken.PONTO, ".");
                 case '\"':
                     return new Token(TipodeToken.ABRE_ASPAS, "\"");
+                case '\'':
+                    return new Token(TipodeToken.ABRE_ASPAS_SIMPLES, "\'");
+                case '\\':
+                    return new Token(TipodeToken.CONTRABARRA, "\\");
+                case '@':
+                    return new Token(TipodeToken.ARROBA, "@");
             }
 
             // operadores aritméticos
@@ -280,9 +298,11 @@ public class LerToken {
         String numberRegex = "^[0-9]+$";
         Pattern pattern = Pattern.compile(numberRegex);
         Matcher matcher = pattern.matcher(valor);
-
-        if (matcher.matches()){
-            return new Token(TipodeToken.NUMB, valor);
+        if (matcher.matches()) {
+            int proxChar = ldat.lerProximoCaractere();
+            if (proxChar == ' ' || matcher.matches()){
+                return new Token(TipodeToken.NUMB, valor);
+            }
         }
         return null;
     }
