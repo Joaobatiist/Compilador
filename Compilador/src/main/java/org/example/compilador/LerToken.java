@@ -37,12 +37,6 @@ public class LerToken {
                 }
             }
 
-            if (c == '\\') {
-                int nextChar = ldat.lerProximoCaractere();
-                if (nextChar == 'n') {
-                    System.out.println("\\n");
-                }
-            }
             // Comentários
             if (c == '/') {
                 int nextChar = ldat.lerProximoCaractere();
@@ -99,40 +93,31 @@ public class LerToken {
             }
 
             // Identificadores e palavras reservadas
-            if (Character.isLetter(c) || c == '_') {
+            if (Character.isLetter(c) || Character.isDigit(c) || c == '_') {
                 palavra.append(c);
                 while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
                     c = (char) caractereLido;
                     if (Character.isLetterOrDigit(c) || c == '_') {
                         palavra.append(c);
                     } else {
-                        // Se encontrar ponto, retroceda
-                        if (c == '.') {
-                            ldat.retroceder(caractereLido);
-                            break;
-                        }
-                        ldat.retroceder(caractereLido); // Retrocede caractere não válido
+                        ldat.retroceder(caractereLido); // Retrocede caractere não esperado
                         break;
                     }
                 }
-                return verificarIdentificador(palavra.toString());
-            }
 
-            // Números
-            if (Character.isDigit(c)) {
-                palavra.append(c);
-                while ((caractereLido = ldat.lerProximoCaractere()) != -1) {
-                    c = (char) caractereLido;
-                    if (Character.isDigit(c)) {
-                        palavra.append(c);
-                    } else {
-                        ldat.retroceder(caractereLido);
-                        break;
-                    }
+                String tokenStr = palavra.toString();
+
+                // Validação: primeiro verifica se é um número válido
+                if (tokenStr.matches("^[0-9]+$")) {
+                    return new Token(TipodeToken.NUMB, tokenStr);
                 }
-                return verificarNumero(palavra.toString());
+                // Verifica se é um identificador válido
+                if (tokenStr.matches("^[a-zA-Z_][a-zA-Z0-9_]*$")) {
+                    return verificarIdentificador(tokenStr);
+                }
+                // Se não for nenhum dos dois, trata como token inválido
+                return new Token(TipodeToken.TOKEN_INVALIDO, tokenStr);
             }
-
             // delimitadores
             switch (c) {
                 case '(':
@@ -271,20 +256,19 @@ public class LerToken {
             if (isPalavraReservada(valor)) {
                 return new Token(TipodeToken.PALAVRA_RESERVADA, valor);
             }
-
             // Verifica se o identificador já foi encontrado
             if (!identificadoresMap.containsKey(valor)) {
                 // Se não foi encontrado, adiciona ao mapa e incrementa o contador
                 contadorIdentificadores++;
                 identificadoresMap.put(valor, contadorIdentificadores);
             }
-
             int idAtual = identificadoresMap.get(valor);
             System.out.print(" id " + idAtual + " {TS}");
+            ldat.retroceder(idAtual);
             return new Token(TipodeToken.IDENTIFICADOR, valor);
         }
 
-        return null;
+        return new Token(TipodeToken.TOKEN_INVALIDO, valor);
     }
 
     public void imprimirIdentificadores() {
@@ -301,6 +285,7 @@ public class LerToken {
         if (matcher.matches()) {
             int proxChar = ldat.lerProximoCaractere();
             if (proxChar == ' ' || matcher.matches()){
+                ldat.retroceder(proxChar);
                 return new Token(TipodeToken.NUMB, valor);
             }
         }
